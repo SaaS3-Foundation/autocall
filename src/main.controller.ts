@@ -38,8 +38,8 @@ export class MainController {
   }
 
   @Delete('/unregister')
-  async unregister(@Query('address') address: string, @Response() res) {
-    await this.registryRepository.deleteByAddress(address);
+  async unregister(@Query('rid') rid: string, @Response() res) {
+    await this.registryRepository.delete(rid);
     res.send({ ok: true });
   }
 }
