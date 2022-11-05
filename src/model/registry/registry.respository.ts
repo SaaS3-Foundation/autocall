@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { RegistryEntity } from './registry.entity';
+import { AutoType, EventType } from './registry.entity';
 
 @Injectable()
 export class RegistryRepository {
@@ -15,6 +16,22 @@ export class RegistryRepository {
     return this.repo.find();
   }
 
+  async findAllCheckPerform(): Promise<RegistryEntity[]> {
+    return this.dataSource
+      .getRepository(RegistryEntity)
+      .createQueryBuilder('registry')
+      .where({ auto_type: AutoType.CHECK_PERFORM })
+      .getMany();
+  }
+
+  async findAllTrigger(): Promise<RegistryEntity[]> {
+    return this.dataSource
+      .getRepository(RegistryEntity)
+      .createQueryBuilder('registry')
+      .where({ auto_type: AutoType.TRIGGER_BY_EVENT })
+      .getMany();
+  }
+
   async count(): Promise<number> {
     return this.repo.count();
   }
@@ -22,7 +39,7 @@ export class RegistryRepository {
   async findByAddress(address: string): Promise<RegistryEntity> {
     return this.dataSource
       .getRepository(RegistryEntity)
-      .createQueryBuilder('fans')
+      .createQueryBuilder('registry')
       .where({ address: address })
       .getOne();
   }

@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import envConfig from './env';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RegistryModule } from './model/registry/registry.module';
-import { TasksService } from './task.service';
+import { TaskService } from './task.service';
 
 @Module({
   imports: [
@@ -16,6 +16,6 @@ import { TasksService } from './task.service';
     }),
   ],
   controllers: [MainController],
-  providers: [TasksService],
+  providers: [TaskService],
 })
 export class AppModule {}

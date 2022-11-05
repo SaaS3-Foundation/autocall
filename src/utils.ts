@@ -31,3 +31,29 @@ export const perform = async (
   }
   return { ok: true };
 };
+
+export const triggle = async (
+  addr: string,
+  abi: any,
+  provider: string,
+  sponsorMnemonic: string,
+  home: string,
+  guest: string,
+): Promise<any> => {
+  const web3 = new Web3(provider);
+  const autocall = new web3.eth.Contract(abi as any, addr);
+  let d = web3.eth.abi.encodeParameters(['string', 'string'], [home, guest]);
+  console.log(d);
+
+  console.log('triggling ...');
+  let prikey = getUserWallet(sponsorMnemonic, provider).privateKey;
+  let signer = web3.eth.accounts.privateKeyToAccount(prikey);
+  web3.eth.accounts.wallet.add(signer);
+
+  let retry = await autocall.methods['triggle'](d).send({
+    from: signer.address,
+    gas: 1000000,
+  });
+  console.log('triggling done. retry:', retry);
+  return { ok: true, retry: retry };
+};
