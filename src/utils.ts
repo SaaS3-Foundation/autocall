@@ -23,10 +23,11 @@ export const perform = async (
     let signer = web3.eth.accounts.privateKeyToAccount(prikey);
     web3.eth.accounts.wallet.add(signer);
 
-    await autocall.methods['perform']().send({
+  res = await autocall.methods['perform']().send({
       from: signer.address,
       gas: 1000000,
     });
+    console.log(res);
     console.log('performing done.');
   }
   return { ok: true };
@@ -39,21 +40,40 @@ export const triggle = async (
   sponsorMnemonic: string,
   home: string,
   guest: string,
+  nonce: number,
 ): Promise<any> => {
   const web3 = new Web3(provider);
   const autocall = new web3.eth.Contract(abi as any, addr);
   let d = web3.eth.abi.encodeParameters(['string', 'string'], [home, guest]);
   console.log(d);
 
-  console.log('triggling ...');
   let prikey = getUserWallet(sponsorMnemonic, provider).privateKey;
   let signer = web3.eth.accounts.privateKeyToAccount(prikey);
   web3.eth.accounts.wallet.add(signer);
 
+  //console.log("calling home ...");
+  //let h = await autocall.methods['home']().call();
+  //console.log(h);
+  const r_nonce = await web3.eth.getTransactionCount(addr, 'pending');
+  console.log('nonce', r_nonce);
+
+  console.log('triggling ...');
+
   let retry = await autocall.methods['triggle'](d).send({
     from: signer.address,
     gas: 1000000,
+    gasPrice: 54.3 * 1e9,
   });
   console.log('triggling done. retry:', retry);
   return { ok: true, retry: retry };
+};
+
+export const encode_test_data = async (provider: string) => {
+  const web3 = new Web3(provider);
+  // let d = web3.eth.abi.encodeParameters(['string'], ["q"]);
+  let d0 = web3.eth.abi.encodeParameters(['uint'], [0]);
+  let d1 = web3.eth.abi.encodeParameters(['uint'], [1]);
+  let d2 = web3.eth.abi.encodeParameters(['uint'], [2]);
+  let d3 = web3.eth.abi.encodeParameters(['uint'], [3]);
+  console.log(d0, d1, d2, d3);
 };
