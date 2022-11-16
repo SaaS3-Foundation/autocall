@@ -74,6 +74,7 @@ export const played = async (
   season_id: string,
   last_check: Date,
   playedlist: string[],
+  only: string[],
 ): Promise<any> => {
   let data = await qatar2022(apikey, season_id);
   if (data.ok === false) {
@@ -91,12 +92,16 @@ export const played = async (
     let found = false;
     for (let j = matches_len - 1; j >= 0; j--) {
       let match = matchday.matches[j];
-      if (match.matchStatus.statusID !== '1' || match.matchID !== "39696") {
+      if (match.matchStatus.statusID !== '1') {
+        continue;
+      }
+      if (only.length > 0 && only.indexOf(match.matchID) === -1) {
+        console.log('skip', match.matchID);
         continue;
       }
       if (playedlist.indexOf(match.matchID) == -1) {
         // found new
-        found = true
+        found = true;
         result = {
           match_id: match.matchID,
           home: match.homeParticipant.participantName,
@@ -112,7 +117,6 @@ export const played = async (
   return result;
 };
 
-
 export const pending = async (
   apikey: string,
   season_id: string,
@@ -125,7 +129,7 @@ export const pending = async (
   let matday_len = mr.calendar.matchdays.length;
   let result = null;
   let ts = [];
-  let names= [];
+  let names = [];
   let homes = [];
   let aways = [];
   for (let i = 0; i < matday_len; i++) {
@@ -145,7 +149,11 @@ export const pending = async (
       if (ud > Date.now()) {
         // console.log('["' + ud + '", "' + (match.homeParticipant.participantName + '-' + match.awayParticipant.participantName) + '", "' + match.homeParticipant.participantName + '", "' + match.awayParticipant.participantName + '"]');
         ts.push(ud);
-        names.push(match.homeParticipant.participantName + '-' + match.awayParticipant.participantName);
+        names.push(
+          match.homeParticipant.participantName +
+            '-' +
+            match.awayParticipant.participantName,
+        );
         homes.push(match.homeParticipant.participantName);
         aways.push(match.awayParticipant.participantName);
       }

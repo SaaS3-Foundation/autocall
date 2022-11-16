@@ -59,7 +59,10 @@ export class MainController {
   async encode(@Response() res) {
     let p = this.configService.get('PROVIDER');
     await utils.encode_test_data(p);
-    await qatar.pending(this.configService.get('QATAR2022_API_KEY'), this.configService.get('SEASON_ID'));
+    await qatar.pending(
+      this.configService.get('QATAR2022_API_KEY'),
+      this.configService.get('SEASON_ID'),
+    );
     res.send({ ok: true });
   }
 }

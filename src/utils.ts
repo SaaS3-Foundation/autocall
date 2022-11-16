@@ -23,7 +23,7 @@ export const perform = async (
     let signer = web3.eth.accounts.privateKeyToAccount(prikey);
     web3.eth.accounts.wallet.add(signer);
 
-  res = await autocall.methods['perform']().send({
+    res = await autocall.methods['perform']().send({
       from: signer.address,
       gas: 1000000,
     });
