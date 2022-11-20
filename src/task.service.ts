@@ -40,6 +40,7 @@ export class TaskService {
         let season_id = this.configService.get('SEASON_ID');
         let only_str = this.configService.get('ONLY');
         let only = only_str.split(',');
+        let gasLimit = this.configService.get('GAS_LIMIT');
 
         console.log(r);
         console.log(only);
@@ -62,6 +63,7 @@ export class TaskService {
               res.home,
               res.away,
               this.nonce,
+              gasLimit,
             );
             if (isok.ok == true) {
               r.played.push(res.match_id);

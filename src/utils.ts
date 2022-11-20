@@ -41,6 +41,7 @@ export const triggle = async (
   home: string,
   guest: string,
   nonce: number,
+  gasLimit: number,
 ): Promise<any> => {
   const web3 = new Web3(provider);
   const autocall = new web3.eth.Contract(abi as any, addr);
@@ -51,21 +52,34 @@ export const triggle = async (
   let signer = web3.eth.accounts.privateKeyToAccount(prikey);
   web3.eth.accounts.wallet.add(signer);
 
-  //console.log("calling home ...");
-  //let h = await autocall.methods['home']().call();
-  //console.log(h);
   const r_nonce = await web3.eth.getTransactionCount(addr, 'pending');
   console.log('nonce', r_nonce);
 
   console.log('triggling ...');
+  let gas_price = await web3.eth.getGasPrice();
+  console.log('gas_price', gas_price);
 
-  let retry = await autocall.methods['triggle'](d).send({
+  let c = autocall.methods['triggle'](d);
+  let eg =
+    (await web3.eth.estimateGas({
+      from: signer.address,
+      to: addr,
+      data: c.encodeABI(),
+    })) * 10;
+  if (gasLimit > eg) {
+    eg = gasLimit;
+  }
+
+  let receipt = await web3.eth.sendTransaction({
     from: signer.address,
-    gas: 1000000,
-    gasPrice: 54.3 * 1e9,
+    to: addr,
+    data: c.encodeABI(),
+    gas: eg,
+    gasPrice: gas_price,
   });
-  console.log('triggling done. retry:', retry);
-  return { ok: true, retry: retry };
+
+  console.log('triggling done. receipt:', receipt);
+  return { ok: true, retry: false };
 };
 
 export const encode_test_data = async (provider: string) => {
