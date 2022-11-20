@@ -35,12 +35,19 @@ export class TaskService {
     this.registryRepository.findAllTrigger().then((reg) => {
       reg.forEach(async (r) => {
         let sponsorMnemonic = this.configService.get('SPONSOR');
-        let provider = this.configService.get('PROVIDER');
         let apikey = this.configService.get('QATAR2022_API_KEY');
         let season_id = this.configService.get('SEASON_ID');
         let only_str = this.configService.get('ONLY');
         let only = only_str.split(',');
         let gasLimit = this.configService.get('GAS_LIMIT');
+        if (r.provider == null || r.provider == '') {
+          console.log(
+            'provider is null',
+            'use default',
+            this.configService.get('PROVIDER'),
+          );
+          r.provider = this.configService.get('PROVIDER');
+        }
 
         console.log(r);
         console.log(only);
@@ -58,7 +65,7 @@ export class TaskService {
             let isok = await utils.triggle(
               r.address,
               JSON.parse(r.abi),
-              provider,
+              r.provider,
               sponsorMnemonic,
               res.home,
               res.away,

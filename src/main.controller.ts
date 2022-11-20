@@ -18,7 +18,7 @@ import * as qatar from './events/Qatar2022MatchEnded';
 const nanoid = customAlphabet('1234567890abcdef', 6);
 
 type CallParams = {
-  rpc: string;
+  provider: string;
   address: string;
   abi: any;
   auto_type: AutoType;
@@ -35,12 +35,16 @@ export class MainController {
   @Post('/register')
   async register(@Body() req: CallParams, @Response() res) {
     // TODO check
+    if (req.provider == null || req.provider == '') {
+      req.provider = this.configService.get('PROVIDER');
+    }
     let ret = await this.registryRepository.save({
       rid: 'reg-ac-' + nanoid(),
       address: req.address,
       abi: JSON.stringify(req.abi),
       auto_type: req.auto_type,
       event_type: req.event_type,
+      provider: req.provider,
       played: [],
       last_check: new Date(),
       create_at: new Date(),

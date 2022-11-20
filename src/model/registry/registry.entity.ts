@@ -40,6 +40,9 @@ export class RegistryEntity {
   @Column('text', { array: true, nullable: true })
   played: string[];
 
+  @Column('text', { nullable: true })
+  provider: string;
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   last_check: Date;
 
