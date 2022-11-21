@@ -96,7 +96,6 @@ export const played = async (
         continue;
       }
       if (only.length > 0 && only.indexOf(match.matchID) === -1) {
-        console.log('skip', match.matchID);
         continue;
       }
       if (playedlist.indexOf(match.matchID) == -1) {

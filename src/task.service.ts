@@ -51,13 +51,18 @@ export class TaskService {
 
         console.log(r);
         console.log(only);
-        let res = await qatar.played(
-          apikey,
-          season_id,
-          r.last_check,
-          r.played,
-          only,
-        );
+        let res = null;
+        try {
+          res = await qatar.played(
+            apikey,
+            season_id,
+            r.last_check,
+            r.played,
+            only,
+          );
+        } catch (e) {
+          console.log(e);
+        }
         if (res != null) {
           // will report
           console.log('report', res);
