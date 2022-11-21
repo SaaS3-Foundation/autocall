@@ -1,6 +1,6 @@
 {
   "name": "@saas3/autocall",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "On-chain contracts auto caller",
   "author": "Tianyi Song <tianyi@saas3.com>",
   "private": false,

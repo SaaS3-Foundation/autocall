@@ -140,27 +140,36 @@ export const pending = async (
     let found = false;
     for (let j = 0; j < matches_len; j++) {
       let match = matchday.matches[j];
+      console.log(match);
       if (match.matchStatus.statusID === '1') {
         continue;
       }
-      let d = match.matchDate + ' ' + match.matchTime;
+      let d = match.matchDate + ' ' + match.matchTime + ' UTC';
       let ud = Date.parse(d);
-      if (ud > Date.now()) {
-        // console.log('["' + ud + '", "' + (match.homeParticipant.participantName + '-' + match.awayParticipant.participantName) + '", "' + match.homeParticipant.participantName + '", "' + match.awayParticipant.participantName + '"]');
-        ts.push(ud);
-        names.push(
-          match.homeParticipant.participantName +
-            '-' +
-            match.awayParticipant.participantName,
-        );
-        homes.push(match.homeParticipant.participantName);
-        aways.push(match.awayParticipant.participantName);
-      }
+      //if (ud > Date.now()) {
+      // console.log('["' + ud + '", "' + (match.homeParticipant.participantName + '-' + match.awayParticipant.participantName) + '", "' + match.homeParticipant.participantName + '", "' + match.awayParticipant.participantName + '"]');
+      ts.push(ud);
+      names.push(
+        match.homeParticipant.participantName +
+          '-' +
+          match.awayParticipant.participantName,
+      );
+      homes.push(match.homeParticipant.participantName);
+      aways.push(match.awayParticipant.participantName);
+      //}
     }
   }
-  console.log(ts.slice(0, 10));
-  console.log(names.slice(0, 10));
-  console.log(homes.slice(0, 10));
-  console.log(aways.slice(0, 10));
+  //console.log(ts.slice(0, 10));
+  //console.log(names.slice(0, 10));
+  //console.log(homes.slice(0, 10));
+  //console.log(aways.slice(0, 10));
+  assert(ts.length === names.length);
+  assert(ts.length === homes.length);
+  assert(ts.length === aways.length);
+  assert(ts.length == 46);
+  console.log(ts);
+  console.log(names);
+  console.log(homes);
+  console.log(aways);
   return result;
 };

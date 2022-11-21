@@ -38,7 +38,11 @@ export class TaskService {
         let apikey = this.configService.get('QATAR2022_API_KEY');
         let season_id = this.configService.get('SEASON_ID');
         let only_str = this.configService.get('ONLY');
-        let only = only_str.split(',');
+        let only = [];
+        if (only_str != null && only_str != '') {
+          only = only_str.split(',');
+        }
+
         let gasLimit = this.configService.get('GAS_LIMIT');
         if (r.provider == null || r.provider == '') {
           console.log(
