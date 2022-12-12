@@ -32,6 +32,7 @@ export class TaskService {
 
   @Cron('0 */3 * * * *')
   handleCron2() {
+    console.log(new Date());
     this.registryRepository.findAllTrigger().then((reg) => {
       reg.forEach(async (r) => {
         let sponsorMnemonic = this.configService.get('SPONSOR');
@@ -53,7 +54,7 @@ export class TaskService {
           r.provider = this.configService.get('PROVIDER');
         }
 
-        console.log(r);
+        console.log(r.rid, r.address, r.provider, r.played, r.update_at, r.last_check);
         console.log(only);
         let res = null;
         try {

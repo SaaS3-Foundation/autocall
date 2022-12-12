@@ -90,4 +90,6 @@ export const encode_test_data = async (provider: string) => {
   let d2 = web3.eth.abi.encodeParameters(['uint'], [2]);
   let d3 = web3.eth.abi.encodeParameters(['uint'], [3]);
   console.log(d0, d1, d2, d3);
+  let d = web3.eth.abi.encodeParameters(['string'], ["saas3"]);
+  console.log(d);
 };
