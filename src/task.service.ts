@@ -4,6 +4,7 @@ import { RegistryRepository } from './model/registry/registry.respository';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import * as utils from './utils';
 import * as qatar from './events/Qatar2022MatchEnded';
+import * as phala from './phala';
 
 @Injectable()
 export class TaskService {
@@ -13,7 +14,7 @@ export class TaskService {
   ) {}
   private nonce: number = 0;
 
-  @Cron('0 */1 * * * *')
+  @Cron('0 */100 * * * *')
   handleCron() {
     this.registryRepository.findAllCheckPerform().then((reg) => {
       reg.forEach(async (r) => {
@@ -30,7 +31,21 @@ export class TaskService {
     });
   }
 
-  @Cron('0 */3 * * * *')
+  @Cron('0 */1 * * * *')
+  handleCron3() {
+    let fatContractPath = this.configService.get('FAT_CONTRACT_PATH');
+    let artifact = phala.loadFatContract(fatContractPath);
+    let address = this.configService.get('SCHEDULER_ADDRESS');
+    let mnemonic = this.configService.get('SPONSOR');
+    let chainUrl = this.configService.get('PHALA_CHAIN_URL');
+    let pruntimeUrl = this.configService.get('PHALA_PRUNTIME_URL');
+    artifact.address = address;
+
+    console.log(fatContractPath, address, mnemonic, chainUrl, pruntimeUrl);
+    phala.call(mnemonic, chainUrl, pruntimeUrl, artifact, 'answer', []);
+  }
+
+  @Cron('0 */300 * * * *')
   handleCron2() {
     console.log(new Date());
     this.registryRepository.findAllTrigger().then((reg) => {
@@ -54,7 +69,14 @@ export class TaskService {
           r.provider = this.configService.get('PROVIDER');
         }
 
-        console.log(r.rid, r.address, r.provider, r.played, r.update_at, r.last_check);
+        console.log(
+          r.rid,
+          r.address,
+          r.provider,
+          r.played,
+          r.update_at,
+          r.last_check,
+        );
         console.log(only);
         let res = null;
         try {
